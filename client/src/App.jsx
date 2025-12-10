@@ -6,11 +6,11 @@ import {
   Navigate,
 } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import Login from './components/Login';
-import Register from './components/Register';
-import Dashboard from './components/Dashboard';
-import PrivateRoute from './components/PrivateRoute';
-import { AuthProvider } from './context/AuthContext';
+import Login from './components/Login.jsx';
+import Register from './components/Register.jsx';
+import Dashboard from './components/Dashboard.jsx';
+import PrivateRoute from './components/PrivateRoute.jsx';
+import AuthProvider from './context/AuthContext.jsx';
 
 function App() {
   return (
@@ -25,13 +25,14 @@ function App() {
               path="/dashboard"
               element={
                 <PrivateRoute>
-                  <Dashboard />
+                  <Dashboard />{' '}
                 </PrivateRoute>
               }
             />
           </Routes>
         </div>
       </Router>
+      //{' '}
     </AuthProvider>
   );
 }
