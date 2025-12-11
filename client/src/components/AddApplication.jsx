@@ -26,7 +26,7 @@ const AddApplication = ({ onAdd }) => {
     setLoading(true);
 
     try {
-      await api.post('/application', formData);
+      await api.post('/applications', formData);
       toast.success('Application added successfully!');
       setFormData({
         company: '',
@@ -36,9 +36,10 @@ const AddApplication = ({ onAdd }) => {
         notes: '',
         salary: '',
       });
-      onAdd(); // Refresh the list
+      onAdd();
     } catch (error) {
-      toast.error('Failed to add application');
+      console.error('Add application error:', error);
+      toast.error(error.response?.data?.message || 'Failed to add application');
     } finally {
       setLoading(false);
     }

@@ -6,16 +6,23 @@ export const AuthContext = createContext();
 function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [token, setToken] = useState(localStorage.getItem('token'));
+  const [token, setToken] = useState(null);
 
   useEffect(() => {
     const loadUser = async () => {
-      if (token) {
+      const storedToken = localStorage.getItem('token');
+      const storedUser = localStorage.getItem('user');
+
+      if (storedToken && storedUser) {
         try {
-          const response = await api.get('/users/profile');
-          setUser(response.data.user);
+          setToken(storedToken);
+          setUser(JSON.parse(storedUser));
+          // Use /v1 - vite proxy passes it through to backend
+          await api.get('/v1/users/profile');
         } catch (error) {
+          console.error('Error loading user:', error);
           localStorage.removeItem('token');
+          localStorage.removeItem('user');
           setToken(null);
           setUser(null);
         }
@@ -24,36 +31,44 @@ function AuthProvider({ children }) {
     };
 
     loadUser();
-  }, [token]);
+  }, []);
 
   const register = async (name, email, password) => {
-    const response = await api.post('/auth/register', {
+    const response = await api.post('/v1/auth/register', {
       name,
       email,
       password,
     });
 
     if (response.data.success) {
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
-      setToken(response.data.token);
-      setUser(response.data.user);
+      const { token: newToken, user: newUser } = response.data;
+      localStorage.setItem('token', newToken);
+      localStorage.setItem('user', JSON.stringify(newUser));
+      setToken(newToken);
+      setUser(newUser);
     }
 
     return response;
   };
 
   const login = async (email, password) => {
-    const response = await api.post('/auth/login', {
+    const response = await api.post('/v1/auth/login', {
       email,
       password,
     });
 
     if (response.data.success) {
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
-      setToken(response.data.token);
-      setUser(response.data.user);
+      const { token: newToken, user: newUser } = response.data;
+
+      // Save to localStorage FIRST
+      localStorage.setItem('token', newToken);
+      localStorage.setItem('user', JSON.stringify(newUser));
+
+      // Then update state
+      setToken(newToken);
+      setUser(newUser);
+
+      // console.log('Login successful:', { token: newToken, user: newUser });
     }
 
     return response;
@@ -66,9 +81,11 @@ function AuthProvider({ children }) {
     setUser(null);
   };
 
+  const isAuthenticated = !!user && !!token;
+
   return (
     <AuthContext.Provider
-      value={{ user, token, loading, register, login, logout }}
+      value={{ user, token, loading, register, login, logout, isAuthenticated }}
     >
       {children}
     </AuthContext.Provider>

@@ -159,7 +159,7 @@ export const getStats = async (req, res) => {
     res.status(200).json({
       success: true,
       stats,
-      total: totalApplications,
+      total: totalApplication,
     });
   } catch (error) {
     res.status(500).json({

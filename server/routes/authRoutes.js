@@ -25,7 +25,7 @@ router.post('/register', registerUser);
 router.post('/login', loginUser);
 
 // Protected routes (authentication required)
-router.use(authMiddleware); // Apply middleware to all routes below
+router.use(authMiddleware); 
 
 router.route('/profile').get(getProfile).put(updateProfile);
 router.route('/password').put(changePassword);

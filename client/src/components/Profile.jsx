@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext.jsx';
 import { authApi } from '../utils/api.js';
 import toast from 'react-hot-toast';
 
 const Profile = () => {
   const { user, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -40,7 +42,7 @@ const Profile = () => {
         github: response.data.user.github || '',
       });
       if (response.data.user.avatar) {
-        setAvatarPreview(`http://localhost:5000/${response.data.user.avatar}`);
+        setAvatarPreview(`http://localhost:8000/${response.data.user.avatar}`);
       }
     } catch (error) {
       toast.error('Failed to fetch profile');
@@ -77,7 +79,6 @@ const Profile = () => {
       await authApi.updateProfile(formData);
       toast.success('Profile updated successfully!');
 
-      // Update avatar if selected
       if (avatar) {
         const formDataAvatar = new FormData();
         formDataAvatar.append('avatar', avatar);
@@ -148,6 +149,29 @@ const Profile = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="max-w-4xl mx-auto">
+        {/* Header with Back Button */}
+        <div className="mb-6 flex items-center gap-4">
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow hover:bg-gray-50 transition text-gray-700 font-medium"
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+            Back to Dashboard
+          </button>
+        </div>
+
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           <div className="px-6 py-4 bg-gradient-to-r from-blue-500 to-purple-600">
             <h1 className="text-2xl font-bold text-white">Profile Settings</h1>

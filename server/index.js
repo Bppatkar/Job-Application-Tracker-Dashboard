@@ -9,6 +9,7 @@ import { fileURLToPath } from 'url';
 
 import connectDB from './db/db.js';
 import path from 'path';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -22,13 +23,9 @@ connectDB();
 const PORT = process.env.PORT || 7000;
 
 app.use('/api/v1/auth', authRouter);
-app.use('/api/v1/application', applicationRouter);
+app.use('/api/v1/applications', applicationRouter);
 
-app.use('/', (req, res) => {
-  res.send('Server is working');
-});
-
-app.use((req, res) => {
+app.use('/api', (req, res) => {
   res.status(404).json({
     success: false,
     message: 'API endpoint not found',
@@ -36,11 +33,14 @@ app.use((req, res) => {
   });
 });
 
+app.get('/', (req, res) => {
+  res.send('Server is working');
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error('Error:', err.message);
 
-  // Multer error
   if (err.name === 'MulterError') {
     if (err.code === 'LIMIT_FILE_SIZE') {
       return res.status(400).json({
@@ -54,7 +54,6 @@ app.use((err, req, res, next) => {
     });
   }
 
-  // Other errors
   res.status(500).json({
     success: false,
     message: 'Something went wrong!',
