@@ -19,7 +19,8 @@ const ApplicationList = ({ applications, loading, onUpdate }) => {
 
   const handleUpdate = async (id) => {
     try {
-      await api.put(`/applications/${id}`, editForm);
+      // Add /v1 to the endpoint
+      await api.put(`/v1/applications/${id}`, editForm);
       toast.success('Application updated!');
       setEditingId(null);
       onUpdate();
@@ -34,7 +35,8 @@ const ApplicationList = ({ applications, loading, onUpdate }) => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this application?')) {
       try {
-        await api.delete(`/applications/${id}`);
+        // Add /v1 to the endpoint
+        await api.delete(`/v1/applications/${id}`);
         toast.success('Application deleted!');
         onUpdate();
       } catch (error) {

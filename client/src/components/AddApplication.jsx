@@ -26,7 +26,7 @@ const AddApplication = ({ onAdd }) => {
     setLoading(true);
 
     try {
-      await api.post('/applications', formData);
+      await api.post('/v1/applications', formData);
       toast.success('Application added successfully!');
       setFormData({
         company: '',

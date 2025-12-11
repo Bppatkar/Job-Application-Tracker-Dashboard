@@ -37,23 +37,23 @@ api.interceptors.response.use(
 export const authApi = {
   register: (userData) => api.post('/v1/auth/register', userData),
   login: (credentials) => api.post('/v1/auth/login', credentials),
-  getProfile: () => api.get('/v1/users/profile'),
-  updateProfile: (data) => api.put('/v1/users/profile', data),
-  changePassword: (data) => api.put('/v1/users/password', data),
+  getProfile: () => api.get('/v1/auth/profile'),
+  updateProfile: (data) => api.put('/v1/auth/profile', data),
+  changePassword: (data) => api.put('/v1/auth/password', data),
   uploadAvatar: (formData) =>
-    api.post('/v1/users/avatar', formData, {
+    api.post('/v1/auth/avatar', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     }),
-  deleteAvatar: () => api.delete('/v1/users/avatar'),
+  deleteAvatar: () => api.delete('/v1/auth/avatar'),
   uploadResume: (formData) =>
-    api.post('/v1/users/resume', formData, {
+    api.post('/v1/auth/resume', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     }),
   downloadResume: (filename) =>
-    api.get(`/v1/users/resume/${filename}`, {
+    api.get(`/v1/auth/resume/${filename}`, {
       responseType: 'blob',
     }),
-  deleteResume: () => api.delete('/v1/users/resume'),
+  deleteResume: () => api.delete('/v1/auth/resume'),
 };
 
 export const applicationApi = {

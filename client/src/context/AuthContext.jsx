@@ -17,8 +17,8 @@ function AuthProvider({ children }) {
         try {
           setToken(storedToken);
           setUser(JSON.parse(storedUser));
-          // Use /v1 - vite proxy passes it through to backend
-          await api.get('/v1/users/profile');
+         
+          await api.get('/v1/auth/profile');
         } catch (error) {
           console.error('Error loading user:', error);
           localStorage.removeItem('token');

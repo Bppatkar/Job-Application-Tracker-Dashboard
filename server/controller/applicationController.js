@@ -80,9 +80,9 @@ export const getApplication = async (req, res) => {
 
 export const updateApplication = async (req, res) => {
   try {
-    const application = await Application.findById(req.params.id);
+    let application = await Application.findById(req.params.id);
     if (!application) {
-      res.status(404).json({
+      return res.status(404).json({
         success: false,
         message: 'Application not found',
       });
@@ -95,10 +95,12 @@ export const updateApplication = async (req, res) => {
       });
     }
 
+    // Use let instead of const, or use findByIdAndUpdate without reassigning
     application = await Application.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
     });
+
     res.status(200).json({
       success: true,
       message: 'Application updated successfully',

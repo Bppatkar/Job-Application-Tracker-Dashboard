@@ -22,7 +22,9 @@ const router = express.Router();
 router.use(authMiddleware);
 
 router.route('/').get(getApplications).post(createApplication);
+
 router.route('/stats').get(getStats);
+
 router
   .route('/:id')
   .get(getApplication)

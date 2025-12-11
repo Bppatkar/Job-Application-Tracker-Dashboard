@@ -37,7 +37,6 @@ app.get('/', (req, res) => {
   res.send('Server is working');
 });
 
-// Error handling middleware
 app.use((err, req, res, next) => {
   console.error('Error:', err.message);
 
