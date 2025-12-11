@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import User from '../models/User.js';
 import { fileURLToPath } from 'url';
 import path from 'path';
+import fs from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -43,7 +44,7 @@ export const registerUser = async (req, res) => {
     });
 
     const token = generateToken(user._id);
-    
+
     return res.status(201).json({
       success: true,
       message: 'User Registered Successfully',
@@ -88,7 +89,7 @@ export const loginUser = async (req, res) => {
       });
     }
 
-    const isPasswordMatch = bcrypt.compare(password, user.password);
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
 
     if (!isPasswordMatch) {
       return res.status(401).json({
@@ -189,7 +190,6 @@ export const changePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword, confirmPassword } = req.body;
 
-    // Validation
     if (!currentPassword || !newPassword || !confirmPassword) {
       return res.status(400).json({
         success: false,
@@ -211,8 +211,7 @@ export const changePassword = async (req, res) => {
       });
     }
 
-    // Find user
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user.id).select('+password');
 
     if (!user) {
       return res.status(404).json({
@@ -221,8 +220,9 @@ export const changePassword = async (req, res) => {
       });
     }
 
-    // Check current password
-    const isMatch = await user.comparePassword(currentPassword);
+    
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+
     if (!isMatch) {
       return res.status(400).json({
         success: false,
@@ -230,8 +230,12 @@ export const changePassword = async (req, res) => {
       });
     }
 
+    // Hash new password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
     // Update password
-    user.password = newPassword;
+    user.password = hashedPassword;
     await user.save();
 
     res.status(200).json({
@@ -239,6 +243,7 @@ export const changePassword = async (req, res) => {
       message: 'Password changed successfully',
     });
   } catch (error) {
+    console.error('Change password error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error',
