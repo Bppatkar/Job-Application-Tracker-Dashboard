@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import api from '../utils/api.js';
-import ApplicationList from './ApplicatonList.jsx';
+import ApplicationList from './ApplicationList.jsx';
 import AddApplication from './AddApplication.jsx';
 import StatsCard from './StatsCard.jsx';
 import {
@@ -12,6 +12,8 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
+import { Link } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext.jsx';
 
 function Dashboard() {
   const [applications, setApplications] = useState([]);
@@ -37,7 +39,7 @@ function Dashboard() {
   };
   const fetchStats = async () => {
     try {
-      const response = await api.get('applications/stats');
+      const response = await api.get('/applications/stats');
       setStats(response.data.stats);
     } catch (error) {
       console.error('Error in Fetching Stats', error);
@@ -61,6 +63,12 @@ function Dashboard() {
             <div className="flex items-center">
               <h1 className="text-2xl font-bold text-blue-600">Job Tracker</h1>
             </div>
+            <Link
+              to="/profile"
+              className="px-4 py-2 text-gray-700 hover:text-blue-600 transition"
+            >
+              Profile
+            </Link>
             <div className="flex items-center space-x-4">
               <button
                 onClick={handleLogout}

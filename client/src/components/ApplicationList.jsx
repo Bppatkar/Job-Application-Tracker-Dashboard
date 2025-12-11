@@ -19,7 +19,7 @@ const ApplicationList = ({ applications, loading, onUpdate }) => {
 
   const handleUpdate = async (id) => {
     try {
-      await api.put(`/applications/${id}`, editForm);
+     await api.put(`/application/${id}`, editForm);
       toast.success('Application updated!');
       setEditingId(null);
       onUpdate();
@@ -31,7 +31,7 @@ const ApplicationList = ({ applications, loading, onUpdate }) => {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this application?')) {
       try {
-        await api.delete(`/applications/${id}`);
+        await api.delete(`/application/${id}`);
         toast.success('Application deleted!');
         onUpdate();
       } catch (error) {

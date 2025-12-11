@@ -6,8 +6,16 @@ import {
   updateApplication,
   deleteApplication,
   getStats,
+  uploadApplicationResume,
+  uploadCoverLetter,
+  downloadFile,
+  deleteFile,
 } from '../controller/applicationController.js';
 import authMiddleware from '../middleware/authMiddleware.js';
+import {
+  uploadResume as uploadResumeMiddleware,
+  uploadMultiple,
+} from '../utils/multer.js';
 
 const router = express.Router();
 
@@ -20,5 +28,17 @@ router
   .get(getApplication)
   .put(updateApplication)
   .delete(deleteApplication);
+
+router.post(
+  '/applications/:id/resume',
+  uploadResumeMiddleware,
+  uploadApplicationResume
+);
+router.post(
+  '/applications/:id/cover-letter',
+  uploadResumeMiddleware,
+  uploadCoverLetter
+);
+router.route('/:type/:filename').get(downloadFile).delete(deleteFile);
 
 export default router;

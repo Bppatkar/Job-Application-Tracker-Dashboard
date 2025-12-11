@@ -11,6 +11,7 @@ import Register from './components/Register.jsx';
 import Dashboard from './components/Dashboard.jsx';
 import PrivateRoute from './components/PrivateRoute.jsx';
 import AuthProvider from './context/AuthContext.jsx';
+import Profile from './components/Profile.jsx';
 
 function App() {
   return (
@@ -25,10 +26,20 @@ function App() {
               path="/dashboard"
               element={
                 <PrivateRoute>
-                  <Dashboard />{' '}
+                  <Dashboard />
                 </PrivateRoute>
               }
             />
+            <Route
+              path="/profile"
+              element={
+                <PrivateRoute>
+                  <Profile />
+                </PrivateRoute>
+              }
+            />
+
+            <Route path="/" element={<Navigate to="/dashboard" />} />
           </Routes>
         </div>
       </Router>

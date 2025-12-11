@@ -1,5 +1,5 @@
 import axios from 'axios';
-const API_URL = 'http:localhost:8000/api/v1';
+const API_URL = 'http://localhost:8000/api/v1';
 
 const api = axios.create({
   baseURL: API_URL,
@@ -24,7 +24,7 @@ api.interceptors.response.use(
     if (error.message?.status === 401) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      window.location.href('/login');
+      window.location.href = '/login';
     }
     return Promise.reject(error);
   }
@@ -32,47 +32,51 @@ api.interceptors.response.use(
 
 export const authApi = {
   register: (userData) => api.post('/auth/register', userData),
-  register: (credentials) => api.post('/auth/login', credentials),
-  getMe: () => api.get('/auth/me'),
-};
-
-export const userAPI = {
-  updateProfile: (data) => api.put('/user/profile', data),
-  changePassword: (data) => api.put('/user/password', data),
-  uploadAvatar: (formData) => {
-    return api.post('/user/avatar', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-  },
+  login: (credentials) => api.post('/auth/login', credentials),
+  getProfile: () => api.get('/users/profile'),
+  updateProfile: (data) => api.put('/users/profile', data),
+  changePassword: (data) => api.put('/users/password', data),
+  uploadAvatar: (formData) =>
+    api.post('/users/avatar', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
+  deleteAvatar: () => api.delete('/users/avatar'),
+  uploadResume: (formData) =>
+    api.post('/users/resume', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
+  downloadResume: (filename) =>
+    api.get(`/users/resume/${filename}`, {
+      responseType: 'blob',
+    }),
+  deleteResume: () => api.delete('/users/resume'),
 };
 
 export const applicationApi = {
-  getAll: () => api.get('/application'),
-  getOne: (id) => api.get(`/application/${id}`),
-  create: (data) => api.post('/application', data),
-  update: (id, data) => api.put(`/application/${id}`, data),
-  delete: (id) => api.delete(`/application/${id}`),
-  getStats: () => api.get(`/application/stats`),
-  search: (query) => api.get(`/application/search?q=${query}`),
+  getAll: () => api.get('/applications'),
+  getOne: (id) => api.get(`/applications/${id}`),
+  create: (data) => api.post('/applications', data),
+  update: (id, data) => api.put(`/applications/${id}`, data),
+  delete: (id) => api.delete(`/applications/${id}`),
+  getStats: () => api.get('/applications/stats'),
+  search: (query) => api.get(`/applications/search?q=${query}`),
+  uploadResume: (id, formData) =>
+    api.post(`/applications/${id}/resume`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
+  uploadCoverLetter: (id, formData) =>
+    api.post(`/applications/${id}/cover-letter`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
 };
 
 // file upload
-export const fileApi = {
-  uploadResume: (formData) => {
-    return api.post('/upload/resume', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-  },
-
-  downloadResume: (fileName) => {
-    return api.get(`/download/resume/${fileName}`, {
+export const fileAPI = {
+  download: (type, filename) =>
+    api.get(`/files/${type}/${filename}`, {
       responseType: 'blob',
-    });
-  },
+    }),
+  delete: (type, filename) => api.delete(`/files/${type}/${filename}`),
 };
 
 export default api;

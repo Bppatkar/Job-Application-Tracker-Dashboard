@@ -3,12 +3,43 @@ import authMiddleware from '../middleware/authMiddleware.js';
 import {
   loginUser,
   registerUser,
-  getMe,
+  changePassword,
+  deleteAvatar,
+  deleteResume,
+  downloadResume,
+  getProfile,
+  updateProfile,
+  uploadAvatar,
+  uploadResume,
 } from '../controller/authController.js';
 
+import {
+  uploadAvatar as uploadAvatarMiddleware,
+  uploadResume as uploadResumeMiddleware,
+} from '../utils/multer.js';
+
 const router = express.Router();
+
+// Public routes (NO authentication required)
 router.post('/register', registerUser);
 router.post('/login', loginUser);
-router.get('/me', authMiddleware, getMe);
+
+// Protected routes (authentication required)
+router.use(authMiddleware); // Apply middleware to all routes below
+
+router.route('/profile').get(getProfile).put(updateProfile);
+router.route('/password').put(changePassword);
+
+router
+  .route('/avatar')
+  .post(uploadAvatarMiddleware, uploadAvatar)
+  .delete(deleteAvatar);
+
+router
+  .route('/resume')
+  .post(uploadResumeMiddleware, uploadResume)
+  .delete(deleteResume);
+
+router.route('/resume/:filename').get(downloadResume);
 
 export default router;

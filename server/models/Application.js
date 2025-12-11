@@ -33,6 +33,9 @@ const applicationSchema = new mongoose.Schema(
     resume: {
       type: String,
     },
+    coverLetter: {
+      type: String,
+    },
     salary: {
       type: Number,
     },
@@ -40,6 +43,12 @@ const applicationSchema = new mongoose.Schema(
       name: String,
       email: String,
       phone: String,
+    },
+    interviewDate: {
+      type: Date,
+    },
+    followUpDate: {
+      type: Date,
     },
   },
   { timestamps: true }

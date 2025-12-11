@@ -19,6 +19,34 @@ const userSchema = new mongoose.Schema(
       required: [true, 'Please provide a password'],
       minlength: 6,
     },
+    avatar: {
+      type: String,
+      default: '',
+    },
+    resume: {
+      type: String,
+      default: '',
+    },
+    phone: {
+      type: String,
+      default: '',
+    },
+    location: {
+      type: String,
+      default: '',
+    },
+    bio: {
+      type: String,
+      default: '',
+    },
+    linkedin: {
+      type: String,
+      default: '',
+    },
+    github: {
+      type: String,
+      default: '',
+    },
   },
   { timestamps: true }
 );

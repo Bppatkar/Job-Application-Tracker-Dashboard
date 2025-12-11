@@ -9,7 +9,7 @@ const AddApplication = ({ onAdd }) => {
     jobLink: '',
     status: 'Applied',
     notes: '',
-    salary: ''
+    salary: '',
   });
   const [loading, setLoading] = useState(false);
 
@@ -17,7 +17,7 @@ const AddApplication = ({ onAdd }) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: name === 'salary' ? (value === '' ? '' : Number(value)) : value
+      [name]: name === 'salary' ? (value === '' ? '' : Number(value)) : value,
     });
   };
 
@@ -26,7 +26,7 @@ const AddApplication = ({ onAdd }) => {
     setLoading(true);
 
     try {
-      await api.post('/applications', formData);
+      await api.post('/application', formData);
       toast.success('Application added successfully!');
       setFormData({
         company: '',
@@ -34,7 +34,7 @@ const AddApplication = ({ onAdd }) => {
         jobLink: '',
         status: 'Applied',
         notes: '',
-        salary: ''
+        salary: '',
       });
       onAdd(); // Refresh the list
     } catch (error) {
@@ -46,8 +46,10 @@ const AddApplication = ({ onAdd }) => {
 
   return (
     <div className="bg-white rounded-lg shadow p-6">
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">Add New Application</h2>
-      
+      <h2 className="text-xl font-semibold text-gray-800 mb-4">
+        Add New Application
+      </h2>
+
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">

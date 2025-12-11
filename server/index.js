@@ -5,8 +5,12 @@ dotenv.config();
 
 import authRouter from './routes/authRoutes.js';
 import applicationRouter from './routes/applicationRoutes.js';
+import { fileURLToPath } from 'url';
 
 import connectDB from './db/db.js';
+import path from 'path';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(cors());
@@ -20,16 +24,44 @@ const PORT = process.env.PORT || 7000;
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/application', applicationRouter);
 
-app.use('/health', (req, res) => {
+app.use('/', (req, res) => {
   res.send('Server is working');
 });
 
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: 'API endpoint not found',
+    requestedUrl: req.originalUrl,
+  });
+});
+
+// Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error('Error:', err.message);
+
+  // Multer error
+  if (err.name === 'MulterError') {
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({
+        success: false,
+        message: 'File size too large. Maximum size is 5MB.',
+      });
+    }
+    return res.status(400).json({
+      success: false,
+      message: err.message,
+    });
+  }
+
+  // Other errors
   res.status(500).json({
     success: false,
     message: 'Something went wrong!',
-    error: process.env.NODE_ENV === 'development' ? err.message : undefined,
+    error:
+      process.env.NODE_ENV === 'development'
+        ? err.message
+        : 'Internal server error',
   });
 });
 

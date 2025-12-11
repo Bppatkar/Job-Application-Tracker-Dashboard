@@ -37,8 +37,17 @@ const authMiddleware = async (req, res, next) => {
       });
     }
 
-    req.user = { id: decoded.id };
+    // Get user from database
+    const user = await User.findById(decoded.id).select('-password');
 
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    req.user = user;
     next();
   } catch (error) {
     console.error('Auth Middleware Error:', error);
@@ -51,7 +60,6 @@ const authMiddleware = async (req, res, next) => {
     }
 
     if (error.name === 'TokenExpiredError') {
-      localStorage.removeItem('token');
       return res.status(401).json({
         success: false,
         message: 'Token expired',

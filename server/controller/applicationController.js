@@ -169,3 +169,201 @@ export const getStats = async (req, res) => {
     });
   }
 };
+
+export const uploadApplicationResume = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please upload a file',
+      });
+    }
+
+    // Find application
+    const application = await Application.findById(req.params.id);
+
+    if (!application) {
+      // Delete uploaded file
+      fs.unlinkSync(req.file.path);
+
+      return res.status(404).json({
+        success: false,
+        message: 'Application not found',
+      });
+    }
+
+    // Check if user owns the application
+    if (application.user.toString() !== req.user.id) {
+      // Delete uploaded file
+      fs.unlinkSync(req.file.path);
+
+      return res.status(401).json({
+        success: false,
+        message: 'Not authorized',
+      });
+    }
+
+    // Delete old resume if exists
+    if (application.resume) {
+      const oldResumePath = path.join(__dirname, '..', application.resume);
+      if (fs.existsSync(oldResumePath)) {
+        fs.unlinkSync(oldResumePath);
+      }
+    }
+
+    // Update application with new resume path
+    application.resume = req.file.path;
+    await application.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Resume uploaded successfully',
+      resume: req.file.path,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: error.message,
+    });
+  }
+};
+
+export const uploadCoverLetter = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please upload a file',
+      });
+    }
+
+    // Find application
+    const application = await Application.findById(req.params.id);
+
+    if (!application) {
+      // Delete uploaded file
+      fs.unlinkSync(req.file.path);
+
+      return res.status(404).json({
+        success: false,
+        message: 'Application not found',
+      });
+    }
+
+    // Check if user owns the application
+    if (application.user.toString() !== req.user.id) {
+      // Delete uploaded file
+      fs.unlinkSync(req.file.path);
+
+      return res.status(401).json({
+        success: false,
+        message: 'Not authorized',
+      });
+    }
+
+    // Delete old cover letter if exists
+    if (application.coverLetter) {
+      const oldCoverPath = path.join(__dirname, '..', application.coverLetter);
+      if (fs.existsSync(oldCoverPath)) {
+        fs.unlinkSync(oldCoverPath);
+      }
+    }
+
+    // Update application with new cover letter path
+    application.coverLetter = req.file.path;
+    await application.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Cover letter uploaded successfully',
+      coverLetter: req.file.path,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: error.message,
+    });
+  }
+};
+
+export const downloadFile = async (req, res) => {
+  try {
+    const { type, filename } = req.params;
+
+    // Validate file type
+    const allowedTypes = ['resumes', 'avatars', 'cover-letters', 'others'];
+    if (!allowedTypes.includes(type)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid file type',
+      });
+    }
+
+    const filePath = path.join(__dirname, '../uploads', type, filename);
+
+    // Check if file exists
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({
+        success: false,
+        message: 'File not found',
+      });
+    }
+
+    // Send file
+    res.download(filePath, filename, (err) => {
+      if (err) {
+        res.status(500).json({
+          success: false,
+          message: 'Error downloading file',
+        });
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: error.message,
+    });
+  }
+};
+
+export const deleteFile = async (req, res) => {
+  try {
+    const { type, filename } = req.params;
+
+    // Validate file type
+    const allowedTypes = ['resumes', 'avatars', 'cover-letters', 'others'];
+    if (!allowedTypes.includes(type)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid file type',
+      });
+    }
+
+    const filePath = path.join(__dirname, '../uploads', type, filename);
+
+    // Check if file exists
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({
+        success: false,
+        message: 'File not found',
+      });
+    }
+
+    // Delete file
+    fs.unlinkSync(filePath);
+
+    res.status(200).json({
+      success: true,
+      message: 'File deleted successfully',
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: error.message,
+    });
+  }
+};
