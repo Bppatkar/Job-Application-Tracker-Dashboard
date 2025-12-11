@@ -28,7 +28,7 @@ router.post('/login', loginUser);
 router.use(authMiddleware); 
 
 router.route('/profile').get(getProfile).put(updateProfile);
-router.route('/password').put(changePassword);
+router.route('/change-password').put(changePassword);
 
 router
   .route('/avatar')

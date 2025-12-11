@@ -30,7 +30,6 @@ function Dashboard() {
     setLoading(true);
     try {
       const res = await api.get('/v1/applications');
-      // Handle both response structures
       const appData = res.data.applications || res.data;
       setApplications(Array.isArray(appData) ? appData : []);
     } catch (error) {
@@ -44,8 +43,12 @@ function Dashboard() {
   const fetchStats = async () => {
     try {
       const response = await api.get('/v1/applications/stats');
-      // Handle both response structures
+      // console.log('Stats response:', response.data); // Debug log
+
+      // Extract stats array from response
       const statsData = response.data.stats || response.data;
+      // console.log('Stats data:', statsData); // Debug log
+
       setStats(Array.isArray(statsData) ? statsData : []);
     } catch (error) {
       console.error('Error in Fetching Stats', error);
@@ -57,12 +60,16 @@ function Dashboard() {
     logout();
   };
 
-  const chartData = Array.isArray(stats)
-    ? stats.map((stat) => ({
-        status: stat._id,
-        count: stat.count,
-      }))
-    : [];
+  // Create chart data from stats
+  const chartData =
+    Array.isArray(stats) && stats.length > 0
+      ? stats.map((stat) => ({
+          status: stat._id || stat.status || 'Unknown',
+          count: stat.count || 0,
+        }))
+      : [];
+
+  // console.log('Chart data:', chartData); // Debug log
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -158,7 +165,9 @@ function Dashboard() {
               ) : (
                 <div className="flex items-center justify-center h-80 bg-gray-50 rounded">
                   <p className="text-gray-500">
-                    No data available yet. Add applications to see the chart.
+                    {applications.length === 0
+                      ? 'No applications yet. Add some to see the chart.'
+                      : 'Loading chart data...'}
                   </p>
                 </div>
               )}

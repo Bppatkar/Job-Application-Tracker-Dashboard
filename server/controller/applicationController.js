@@ -1,4 +1,5 @@
 import Application from '../models/Application.js';
+import mongoose from 'mongoose';
 
 export const getApplications = async (req, res) => {
   try {
@@ -149,14 +150,20 @@ export const deleteApplication = async (req, res) => {
 
 export const getStats = async (req, res) => {
   try {
+    const userId = new mongoose.Types.ObjectId(req.user.id);
+
     const stats = await Application.aggregate([
-      { $match: { user: req.user.id } },
+      { $match: { user: userId } },
       { $group: { _id: '$status', count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
     ]);
 
     const totalApplication = await Application.countDocuments({
       user: req.user.id,
     });
+
+    // console.log('Stats query result:', stats);
+    // console.log('Total applications:', totalApplication);
 
     res.status(200).json({
       success: true,
@@ -164,6 +171,7 @@ export const getStats = async (req, res) => {
       total: totalApplication,
     });
   } catch (error) {
+    console.error('Stats error:', error);
     res.status(500).json({
       success: false,
       message: 'server-error',

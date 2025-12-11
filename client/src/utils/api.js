@@ -39,7 +39,7 @@ export const authApi = {
   login: (credentials) => api.post('/v1/auth/login', credentials),
   getProfile: () => api.get('/v1/auth/profile'),
   updateProfile: (data) => api.put('/v1/auth/profile', data),
-  changePassword: (data) => api.put('/v1/auth/password', data),
+  changePassword: (data) => api.put('/v1/auth/change-password', data),
   uploadAvatar: (formData) =>
     api.post('/v1/auth/avatar', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
