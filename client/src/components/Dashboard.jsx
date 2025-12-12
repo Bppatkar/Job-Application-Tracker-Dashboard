@@ -57,14 +57,18 @@ function Dashboard() {
     logout();
   };
 
-  // Create chart data from stats
   const chartData =
     Array.isArray(stats) && stats.length > 0
       ? stats.map((stat) => ({
           status: stat._id || stat.status || 'Unknown',
           count: stat.count || 0,
         }))
-      : [];
+      : [
+          { status: 'Applied', count: 0 },
+          { status: 'Interview', count: 0 },
+          { status: 'Offer', count: 0 },
+          { status: 'Rejected', count: 0 },
+        ];
 
   // console.log('Chart data:', chartData); // Debug log
 
@@ -139,8 +143,17 @@ function Dashboard() {
                 Application Status Distribution
               </h2>
               {chartData && chartData.length > 0 ? (
-                <div style={{ width: '100%', height: 320 }}>
-                  <ResponsiveContainer width="100%" height="100%">
+                <div
+                  className="relative"
+                  style={{ width: '100%', height: '320px', minHeight: '320px' }}
+                >
+                  <ResponsiveContainer
+                    width="100%"
+                    height="100%"
+                    minHeight={320}
+                    minWidth={300}
+                    debounce={1}
+                  >
                     <BarChart
                       data={chartData}
                       margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
