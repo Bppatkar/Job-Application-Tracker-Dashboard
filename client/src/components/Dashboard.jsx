@@ -72,8 +72,8 @@ function Dashboard() {
   // console.log('Chart data:', chartData); // Debug log
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white shadow-lg">
+    <div className="min-h-screen bg-slate-600">
+      <nav className="bg-slate-100 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
@@ -135,7 +135,7 @@ function Dashboard() {
             </div>
 
             {/* Chart */}
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-slate-100 rounded-lg shadow p-6">
               <h2 className="text-xl font-semibold text-gray-800 mb-4">
                 Application Status Distribution
               </h2>

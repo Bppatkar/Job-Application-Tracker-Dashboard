@@ -60,7 +60,11 @@ const AddApplication = ({ onAdd }) => {
         await uploadApplicationFile(newAppId, files.resume, 'resume');
       }
       if (files.coverLetter) {
-        await uploadApplicationFile(newAppId, files.coverLetter, 'cover-letter');
+        await uploadApplicationFile(
+          newAppId,
+          files.coverLetter,
+          'cover-letter'
+        );
       }
 
       // Reset form
@@ -96,15 +100,18 @@ const AddApplication = ({ onAdd }) => {
       const formDataFile = new FormData();
       formDataFile.append(type === 'resume' ? 'resume' : 'coverLetter', file);
 
-      const endpoint = type === 'resume'
-        ? `/v1/applications/${applicationId}/resume`
-        : `/v1/applications/${applicationId}/cover-letter`;
+      const endpoint =
+        type === 'resume'
+          ? `/v1/applications/${applicationId}/resume`
+          : `/v1/applications/${applicationId}/cover-letter`;
 
       await api.post(endpoint, formDataFile, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
-      toast.success(`${type === 'resume' ? 'Resume' : 'Cover letter'} uploaded!`);
+      toast.success(
+        `${type === 'resume' ? 'Resume' : 'Cover letter'} uploaded!`
+      );
     } catch (error) {
       console.error(`Upload ${type} error:`, error);
       toast.error(`Failed to upload ${type}`);
@@ -112,8 +119,10 @@ const AddApplication = ({ onAdd }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">Add New Application</h2>
+    <div className="bg-slate-100 rounded-lg shadow p-6">
+      <h2 className="text-xl font-semibold text-gray-800 mb-4">
+        Add New Application
+      </h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -210,7 +219,9 @@ const AddApplication = ({ onAdd }) => {
 
         {/* File Uploads */}
         <div className="border-t pt-4">
-          <h3 className="text-sm font-medium text-gray-700 mb-3">Attachments (Optional)</h3>
+          <h3 className="text-sm font-medium text-gray-700 mb-3">
+            Attachments (Optional)
+          </h3>
 
           <div className="space-y-3">
             <div>
@@ -219,10 +230,22 @@ const AddApplication = ({ onAdd }) => {
               </label>
               <label className="flex items-center justify-center w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-md cursor-pointer hover:border-blue-500 transition">
                 <div className="flex items-center gap-2">
-                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  <svg
+                    className="w-5 h-5 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 4v16m8-8H4"
+                    />
                   </svg>
-                  <span className="text-sm text-gray-600">{fileNames.resume}</span>
+                  <span className="text-sm text-gray-600">
+                    {fileNames.resume}
+                  </span>
                 </div>
                 <input
                   type="file"
@@ -239,10 +262,22 @@ const AddApplication = ({ onAdd }) => {
               </label>
               <label className="flex items-center justify-center w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-md cursor-pointer hover:border-blue-500 transition">
                 <div className="flex items-center gap-2">
-                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  <svg
+                    className="w-5 h-5 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 4v16m8-8H4"
+                    />
                   </svg>
-                  <span className="text-sm text-gray-600">{fileNames.coverLetter}</span>
+                  <span className="text-sm text-gray-600">
+                    {fileNames.coverLetter}
+                  </span>
                 </div>
                 <input
                   type="file"
