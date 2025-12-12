@@ -27,7 +27,13 @@ const PORT = process.env.PORT || 7000;
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/applications', applicationRouter);
 
+// Add a simple test route for files
+app.get('/api/v1/files/test', (req, res) => {
+  res.json({ success: true, message: 'Files route is working' });
+});
+
 app.use('/api', (req, res) => {
+  console.log('API endpoint not found:', req.originalUrl); // Add logging
   res.status(404).json({
     success: false,
     message: 'API endpoint not found',

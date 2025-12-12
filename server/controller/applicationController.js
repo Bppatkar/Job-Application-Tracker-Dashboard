@@ -322,6 +322,7 @@ export const uploadCoverLetter = async (req, res) => {
 export const downloadFile = async (req, res) => {
   try {
     const { type, filename } = req.params;
+    // console.log('Download request - type:', type, 'filename:', filename);
 
     // Validate file type
     const allowedTypes = ['resumes', 'avatars', 'cover-letters', 'others'];
@@ -331,20 +332,35 @@ export const downloadFile = async (req, res) => {
         message: 'Invalid file type',
       });
     }
+    let cleanFilename = filename;
+    if (cleanFilename.includes('\\')) {
+      cleanFilename = cleanFilename.split('\\').pop();
+    } else if (cleanFilename.includes('/')) {
+      cleanFilename = cleanFilename.split('/').pop();
+    }
 
-    const filePath = path.join(__dirname, '../uploads', type, filename);
+    // console.log('Clean filename:', cleanFilename);
+
+    // Construct file path
+    const filePath = path.join(__dirname, '../uploads', type, cleanFilename);
+    // console.log('File path:', filePath);
 
     // Check if file exists
     if (!fs.existsSync(filePath)) {
+      // console.log('File not found at:', filePath);
       return res.status(404).json({
         success: false,
         message: 'File not found',
+        filename: cleanFilename,
+        type: type,
       });
     }
 
     // Send file
-    res.download(filePath, filename, (err) => {
+    // console.log('Sending file:', filePath);
+    res.download(filePath, cleanFilename, (err) => {
       if (err) {
+        console.error('Download error:', err);
         res.status(500).json({
           success: false,
           message: 'Error downloading file',
@@ -352,6 +368,7 @@ export const downloadFile = async (req, res) => {
       }
     });
   } catch (error) {
+    console.error('File download error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error',

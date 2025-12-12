@@ -99,24 +99,51 @@ const ApplicationList = ({ applications, loading, onUpdate }) => {
     }
   };
 
-  const downloadFile = async (filename, type) => {
+  const downloadFile = async (filePath) => {
+    // Change parameter name from 'filename' to 'filePath'
     try {
-      const justFilename = filename.includes('/')
-        ? filename.split('/').pop()
-        : filename;
-      const response = await api.get(`/v1/files/${type}/${justFilename}`, {
-        responseType: 'blob',
-      });
+      const justFilename = getFileName(filePath); // Use getFileName instead of manually splitting
+
+      // Determine file type based on path
+      let fileType = 'resumes';
+      const normalizedPath = filePath
+        ? filePath.replace(/\\/g, '/').toLowerCase()
+        : '';
+
+      if (normalizedPath.includes('cover')) {
+        fileType = 'cover-letters';
+      } else if (normalizedPath.includes('avatar')) {
+        fileType = 'avatars';
+      }
+
+      // console.log('Downloading:', { filePath, justFilename, fileType });
+
+      const response = await api.get(
+        `/v1/applications/files/${fileType}/${justFilename}`,
+        {
+          responseType: 'blob',
+        }
+      );
+
       const url = window.URL.createObjectURL(response.data);
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', filename);
+      link.setAttribute('download', justFilename);
       document.body.appendChild(link);
       link.click();
       link.remove();
+      window.URL.revokeObjectURL(url);
     } catch (error) {
+      console.error('Download error:', error);
       toast.error('Failed to download file');
     }
+  };
+
+  const getFileName = (path) => {
+    if (!path) return null;
+
+    const normalizedPath = path.replace(/\\/g, '/');
+    return normalizedPath.split('/').pop();
   };
 
   const getStatusColor = (status) => {
@@ -128,11 +155,6 @@ const ApplicationList = ({ applications, loading, onUpdate }) => {
       Accepted: 'bg-purple-100 text-purple-800',
     };
     return colors[status] || 'bg-gray-100 text-gray-800';
-  };
-
-  const getFileName = (path) => {
-    if (!path) return null;
-    return path.split('/').pop();
   };
 
   if (loading) {
@@ -534,10 +556,7 @@ const ApplicationList = ({ applications, loading, onUpdate }) => {
                         <div className="flex gap-2">
                           <button
                             onClick={() =>
-                              downloadFile(
-                                getFileName(selectedApp.coverLetter),
-                                'cover-letters'
-                              )
+                              downloadFile(selectedApp.coverLetter)
                             }
                             className="text-blue-600 hover:text-blue-900 text-sm"
                           >

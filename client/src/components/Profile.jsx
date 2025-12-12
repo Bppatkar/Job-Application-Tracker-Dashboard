@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext.jsx';
 import { authApi } from '../utils/api.js';
 import toast from 'react-hot-toast';
+import api from '../utils/api';
 
 const Profile = () => {
   const { user, logout } = useContext(AuthContext);
@@ -46,6 +47,7 @@ const Profile = () => {
         setAvatarPreview(`http://localhost:8000/${response.data.user.avatar}`);
       }
       if (response.data.user.resume) {
+        // console.log('Resume file path:', response.data.user.resume);
         setResumeFile(response.data.user.resume);
       }
     } catch (error) {
@@ -151,6 +153,53 @@ const Profile = () => {
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to upload resume');
     }
+  };
+
+  const downloadFile = async (filePath) => {
+    // Change parameter name from 'filename' to 'filePath'
+    try {
+      const justFilename = getFileName(filePath); // Use getFileName instead of manually splitting
+
+      // Determine file type based on path
+      let fileType = 'resumes';
+      const normalizedPath = filePath
+        ? filePath.replace(/\\/g, '/').toLowerCase()
+        : '';
+
+      if (normalizedPath.includes('cover')) {
+        fileType = 'cover-letters';
+      } else if (normalizedPath.includes('avatar')) {
+        fileType = 'avatars';
+      }
+
+      console.log('Downloading:', { filePath, justFilename, fileType });
+
+      const response = await api.get(
+        `/v1/applications/files/${fileType}/${justFilename}`,
+        {
+          responseType: 'blob',
+        }
+      );
+
+      const url = window.URL.createObjectURL(response.data);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', justFilename);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Download error:', error);
+      toast.error('Failed to download file');
+    }
+  };
+
+  const getFileName = (path) => {
+    if (!path) return null;
+
+    const normalizedPath = path.replace(/\\/g, '/');
+    return normalizedPath.split('/').pop();
   };
 
   const handleDeleteResume = async () => {
@@ -279,14 +328,24 @@ const Profile = () => {
                           ✓ Resume Uploaded
                         </p>
                         <div className="flex gap-2">
-                          <a
-                            href={`http://localhost:8000/${resumeFile}`}
+                          {/* <a
+                            // href={`http://localhost:8000/${resumeFile}`}
+                            href={`http://localhost:8000/api/v1/files/resumes/${getFileName(
+                              resumeFile
+                            )}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-xs bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700"
                           >
                             Download
-                          </a>
+                          </a> */}
+                          <button
+                            // onClick={() =>downloadFile(getFileName(selectedApp.resume),'resumes')}
+                            onClick={() => downloadFile(resumeFile)}
+                            className="tezt-xs bg-blue-600 hover:bg-blue-900 text-white px-2 py-1"
+                          >
+                            Download
+                          </button>
                           <button
                             onClick={handleDeleteResume}
                             className="text-xs bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700"

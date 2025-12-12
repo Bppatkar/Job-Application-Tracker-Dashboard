@@ -35,7 +35,7 @@ router
   .post(uploadCoverLetterMiddleware, uploadCoverLetter)
   .delete(deleteFile);
 
-router.route('/:type/:filename').get(downloadFile).delete(deleteFile);
+router.route('/files/:type/:filename').get(downloadFile).delete(deleteFile);
 
 router
   .route('/:id')

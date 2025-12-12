@@ -18,7 +18,7 @@ export const registerUser = async (req, res) => {
 
     // Validation
     if (!name || !email || !password) {
-      console.log('Missing fields');
+      // console.log('Missing fields');
       return res.status(400).json({
         success: false,
         message: 'Please provide all required fields',
@@ -27,7 +27,7 @@ export const registerUser = async (req, res) => {
 
     const userExists = await User.findOne({ email });
     if (userExists) {
-      console.log('User already exists');
+      // console.log('User already exists');
       return res.status(400).json({
         success: false,
         message: 'User already exists. Please login.',
