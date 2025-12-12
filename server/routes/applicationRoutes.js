@@ -21,23 +21,26 @@ const router = express.Router();
 
 router.use(authMiddleware);
 
+router.get('/stats', getStats);
+
 router.route('/').get(getApplications).post(createApplication);
+
+router
+  .route('/:id/resume')
+  .post(uploadResumeMiddleware, uploadApplicationResume)
+  .delete(deleteFile);
+
+router
+  .route('/:id/cover-letter')
+  .post(uploadCoverLetterMiddleware, uploadCoverLetter)
+  .delete(deleteFile);
+
+router.route('/:type/:filename').get(downloadFile).delete(deleteFile);
 
 router
   .route('/:id')
   .get(getApplication)
   .put(updateApplication)
   .delete(deleteApplication);
-
-router.route('/stats').get(getStats);
-
-router
-  .post('/:id/resume', uploadResumeMiddleware, uploadApplicationResume)
-  .delete(deleteFile);
-router
-  .post('/:id/cover-letter', uploadCoverLetterMiddleware, uploadCoverLetter)
-  .delete(deleteFile);
-
-// router.route('/:type/:filename').get(downloadFile).delete(deleteFile);
 
 export default router;
