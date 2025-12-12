@@ -220,7 +220,6 @@ export const changePassword = async (req, res) => {
       });
     }
 
-    
     const isMatch = await bcrypt.compare(currentPassword, user.password);
 
     if (!isMatch) {
@@ -463,5 +462,33 @@ export const deleteResume = async (req, res) => {
       message: 'Server error',
       error: error.message,
     });
+  }
+};
+
+export const getAvatar = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user || !user.avatar) {
+      return res
+        .status(404)
+        .json({ success: false, message: 'Avatar not found' });
+    }
+    res.sendFile(path.join(__dirname, '..', user.avatar));
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+export const getResume = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user || !user.resume) {
+      return res
+        .status(404)
+        .json({ success: false, message: 'Resume not found' });
+    }
+    res.download(path.join(__dirname, '..', user.resume));
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
   }
 };

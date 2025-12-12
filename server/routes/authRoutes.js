@@ -11,6 +11,8 @@ import {
   updateProfile,
   uploadAvatar,
   uploadResume,
+  getAvatar,
+  getResume,
 } from '../controller/authController.js';
 
 import {
@@ -25,15 +27,16 @@ router.post('/register', registerUser);
 router.post('/login', loginUser);
 
 // Protected routes (authentication required)
-router.use(authMiddleware); 
+router.use(authMiddleware);
 
 router.route('/profile').get(getProfile).put(updateProfile);
-router.route('/change-password').put(changePassword);
 
 router
   .route('/avatar')
   .post(uploadAvatarMiddleware, uploadAvatar)
   .delete(deleteAvatar);
+
+router.route('/avatar-display').get(getAvatar);
 
 router
   .route('/resume')
@@ -41,5 +44,8 @@ router
   .delete(deleteResume);
 
 router.route('/resume/:filename').get(downloadResume);
+
+router.route('/resume-download').get(getResume);
+router.route('/change-password').put(changePassword);
 
 export default router;

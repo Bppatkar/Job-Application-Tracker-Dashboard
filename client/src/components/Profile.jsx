@@ -18,6 +18,7 @@ const Profile = () => {
   });
   const [avatar, setAvatar] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState('');
+  const [resumeFile, setResumeFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [passwordData, setPasswordData] = useState({
     currentPassword: '',
@@ -43,6 +44,9 @@ const Profile = () => {
       });
       if (response.data.user.avatar) {
         setAvatarPreview(`http://localhost:8000/${response.data.user.avatar}`);
+      }
+      if (response.data.user.resume) {
+        setResumeFile(response.data.user.resume);
       }
     } catch (error) {
       toast.error('Failed to fetch profile');
@@ -84,6 +88,8 @@ const Profile = () => {
         formDataAvatar.append('avatar', avatar);
         await authApi.uploadAvatar(formDataAvatar);
         toast.success('Avatar updated successfully!');
+        setAvatar(null);
+        fetchProfile();
       }
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to update profile');
@@ -141,8 +147,35 @@ const Profile = () => {
     try {
       await authApi.uploadResume(formDataResume);
       toast.success('Resume uploaded successfully!');
+      fetchProfile();
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to upload resume');
+    }
+  };
+
+  const handleDeleteResume = async () => {
+    if (!window.confirm('Are you sure you want to delete your resume?')) return;
+
+    try {
+      await authApi.deleteResume();
+      toast.success('Resume deleted successfully!');
+      setResumeFile(null);
+      fetchProfile();
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to delete resume');
+    }
+  };
+
+  const handleDeleteAvatar = async () => {
+    if (!window.confirm('Are you sure you want to delete your avatar?')) return;
+
+    try {
+      await authApi.deleteAvatar();
+      toast.success('Avatar deleted successfully!');
+      setAvatarPreview('');
+      fetchProfile();
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to delete avatar');
     }
   };
 
@@ -189,7 +222,9 @@ const Profile = () => {
                       <img
                         src={
                           avatarPreview ||
-                          `https://ui-avatars.com/api/?name=${formData.name}&background=random`
+                          (user?.avatar
+                            ? `http://localhost:8000/api/v1/auth/avatar-display`
+                            : `https://ui-avatars.com/api/?name=${formData.name}&background=random`)
                         }
                         alt="Avatar"
                         className="w-32 h-32 rounded-full border-4 border-white shadow-lg mx-auto"
@@ -225,11 +260,42 @@ const Profile = () => {
                     <p className="text-sm text-gray-500 mt-2">
                       Click to change photo
                     </p>
+                    {avatarPreview && (
+                      <button
+                        onClick={handleDeleteAvatar}
+                        className="text-xs text-red-600 hover:text-red-800 mt-1"
+                      >
+                        Delete Avatar
+                      </button>
+                    )}
                   </div>
 
                   {/* Resume Upload */}
                   <div className="border rounded-lg p-4">
                     <h3 className="font-medium text-gray-800 mb-2">Resume</h3>
+                    {resumeFile ? (
+                      <div className="bg-green-50 p-3 rounded border border-green-200 mb-2">
+                        <p className="text-sm text-green-800 font-medium mb-2">
+                          ✓ Resume Uploaded
+                        </p>
+                        <div className="flex gap-2">
+                          <a
+                            href={`http://localhost:8000/${resumeFile}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700"
+                          >
+                            Download
+                          </a>
+                          <button
+                            onClick={handleDeleteResume}
+                            className="text-xs bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    ) : null}
                     <label className="block w-full bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:border-blue-500 transition">
                       <input
                         type="file"
@@ -251,7 +317,7 @@ const Profile = () => {
                         />
                       </svg>
                       <span className="text-sm text-gray-600">
-                        Upload Resume
+                        {resumeFile ? 'Update Resume' : 'Upload Resume'}
                       </span>
                       <p className="text-xs text-gray-500 mt-1">
                         PDF or DOC, max 5MB

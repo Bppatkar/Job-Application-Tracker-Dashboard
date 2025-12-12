@@ -20,7 +20,8 @@ const fileFilter = (req, file, cb) => {
     'image/gif': 'gif',
     'application/pdf': 'pdf',
     'application/msword': 'doc',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'docx',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+      'docx',
   };
 
   if (allowedTypes[file.mimetype]) {
@@ -74,5 +75,6 @@ const upload = multer({
 
 export const uploadAvatar = upload.single('avatar');
 export const uploadResume = upload.single('resume');
+export const uploadCoverLetter = upload.single('cover');
 export const uploadMultiple = upload.array('files', 5);
 export { storage };

@@ -1,5 +1,6 @@
 import Application from '../models/Application.js';
 import mongoose from 'mongoose';
+import fs from 'fs';
 
 export const getApplications = async (req, res) => {
   try {
@@ -133,6 +134,21 @@ export const deleteApplication = async (req, res) => {
         message: 'Not authorized',
       });
     }
+
+    if (application.resume) {
+      const resumePath = path.join(__dirname, '..', application.resume);
+      if (fs.existsSync(resumePath)) {
+        fs.unlinkSync(resumePath);
+      }
+    }
+
+    if (application.coverLetter) {
+      const coverPath = path.join(__dirname, '..', application.coverLetter);
+      if (fs.existsSync(coverPath)) {
+        fs.unlinkSync(coverPath);
+      }
+    }
+
     await application.deleteOne();
 
     res.status(200).json({
@@ -341,29 +357,41 @@ export const downloadFile = async (req, res) => {
 
 export const deleteFile = async (req, res) => {
   try {
-    const { type, filename } = req.params;
+    const applicationId = req.params.id;
+    const fileType = req.path.includes('resume') ? 'resume' : 'coverLetter';
 
-    // Validate file type
-    const allowedTypes = ['resumes', 'avatars', 'cover-letters', 'others'];
-    if (!allowedTypes.includes(type)) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid file type',
-      });
-    }
+    const application = await Application.findById(applicationId);
 
-    const filePath = path.join(__dirname, '../uploads', type, filename);
-
-    // Check if file exists
-    if (!fs.existsSync(filePath)) {
+    if (!application) {
       return res.status(404).json({
         success: false,
-        message: 'File not found',
+        message: 'Application not found',
       });
     }
 
-    // Delete file
-    fs.unlinkSync(filePath);
+    // Check authorization
+    if (application.user.toString() !== req.user.id) {
+      return res.status(401).json({
+        success: false,
+        message: 'Not authorized',
+      });
+    }
+
+    if (fileType === 'resume' && application.resume) {
+      const resumePath = path.join(__dirname, '..', application.resume);
+      if (fs.existsSync(resumePath)) {
+        fs.unlinkSync(resumePath);
+      }
+      application.resume = '';
+    } else if (fileType === 'coverLetter' && application.coverLetter) {
+      const coverPath = path.join(__dirname, '..', application.coverLetter);
+      if (fs.existsSync(coverPath)) {
+        fs.unlinkSync(coverPath);
+      }
+      application.coverLetter = '';
+    }
+
+    await application.save();
 
     res.status(200).json({
       success: true,
