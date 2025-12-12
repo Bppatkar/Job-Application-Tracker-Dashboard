@@ -3,6 +3,7 @@ import api from '../utils/api.js';
 import ApplicationList from './ApplicationList.jsx';
 import AddApplication from './AddApplication.jsx';
 import StatsCard from './StatsCard.jsx';
+import ProfileModal from './ProfileModal.jsx';
 import {
   BarChart,
   Bar,
@@ -20,6 +21,7 @@ function Dashboard() {
   const [stats, setStats] = useState([]);
   const [loading, setLoading] = useState(false);
   const { logout } = useContext(AuthContext);
+  const [showProfileModal, setShowProfileModal] = useState(false);
 
   useEffect(() => {
     fetchApplications();
@@ -43,12 +45,7 @@ function Dashboard() {
   const fetchStats = async () => {
     try {
       const response = await api.get('/v1/applications/stats');
-      // console.log('Stats response:', response.data); // Debug log
-
-      // Extract stats array from response
       const statsData = response.data.stats || response.data;
-      // console.log('Stats data:', statsData); // Debug log
-
       setStats(Array.isArray(statsData) ? statsData : []);
     } catch (error) {
       console.error('Error in Fetching Stats', error);
@@ -80,12 +77,14 @@ function Dashboard() {
               <h1 className="text-2xl font-bold text-blue-600">Job Tracker</h1>
             </div>
             <div className="flex items-center space-x-4">
+              {/* Keep the link to full page profile */}
               <Link
                 to="/profile"
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-blue-500 hover:text-white transition duration-200"
+                className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-700 hover:text-white transition duration-200"
               >
                 Profile
               </Link>
+
               <button
                 onClick={handleLogout}
                 className="px-4 py-2 text-sm font-medium bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-200"
@@ -189,6 +188,10 @@ function Dashboard() {
           />
         </div>
       </div>
+      <ProfileModal
+        isOpen={showProfileModal}
+        onClose={() => setShowProfileModal(false)}
+      />
     </div>
   );
 }
