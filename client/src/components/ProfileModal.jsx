@@ -1,4 +1,3 @@
-// components/ProfileModal.jsx
 import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext.jsx';
 import { authApi } from '../utils/api.js';
@@ -33,6 +32,15 @@ const ProfileModal = ({ isOpen, onClose }) => {
     }
   }, [isOpen]);
 
+  const getApiUrl = () => {
+    const apiUrl = import.meta.env.VITE_API_URL;
+
+    if (apiUrl && apiUrl.trim()) {
+      return apiUrl;
+    }
+    return 'http://localhost:8000';
+  };
+
   const fetchProfile = async () => {
     try {
       const response = await authApi.getProfile();
@@ -46,7 +54,8 @@ const ProfileModal = ({ isOpen, onClose }) => {
         github: response.data.user.github || '',
       });
       if (response.data.user.avatar) {
-        setAvatarPreview(`http://localhost:8000/${response.data.user.avatar}`);
+        // setAvatarPreview(`http://localhost:8000/${response.data.user.avatar}`);
+        setAvatarPreview(`${getApiUrl()}/${response.data.user.avatar}`);
       }
       if (response.data.user.resume) {
         setResumeFile(response.data.user.resume);
@@ -261,42 +270,75 @@ const ProfileModal = ({ isOpen, onClose }) => {
           <div className="flex border-b mb-6">
             <button
               onClick={() => setActiveTab('profile')}
-              className={`px-4 py-2 font-medium ${activeTab === 'profile'
+              className={`px-4 py-2 font-medium ${
+                activeTab === 'profile'
                   ? 'text-blue-600 border-b-2 border-blue-600'
                   : 'text-gray-500 hover:text-gray-700'
-                }`}
+              }`}
             >
               <div className="flex items-center gap-2">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  />
                 </svg>
                 Profile
               </div>
             </button>
             <button
               onClick={() => setActiveTab('security')}
-              className={`px-4 py-2 font-medium ${activeTab === 'security'
+              className={`px-4 py-2 font-medium ${
+                activeTab === 'security'
                   ? 'text-blue-600 border-b-2 border-blue-600'
                   : 'text-gray-500 hover:text-gray-700'
-                }`}
+              }`}
             >
               <div className="flex items-center gap-2">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                  />
                 </svg>
                 Security
               </div>
             </button>
             <button
               onClick={() => setActiveTab('resume')}
-              className={`px-4 py-2 font-medium ${activeTab === 'resume'
+              className={`px-4 py-2 font-medium ${
+                activeTab === 'resume'
                   ? 'text-blue-600 border-b-2 border-blue-600'
                   : 'text-gray-500 hover:text-gray-700'
-                }`}
+              }`}
             >
               <div className="flex items-center gap-2">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
                 </svg>
                 Resume
               </div>
@@ -313,15 +355,32 @@ const ProfileModal = ({ isOpen, onClose }) => {
                   <div className="text-center">
                     <div className="relative inline-block">
                       <img
+                        // src={
+                        //   avatarPreview ||
+                        //   (user?.avatar
+                        //     ? // ? `http://localhost:8000/api/v1/auth/avatar-display`
+                        //       `${getApiUrl()}/api/v1/auth/avatar-display`
+                        //     : `https://ui-avatars.com/api/?name=${formData.name}&background=random`)
+                        // }
                         src={
                           avatarPreview ||
                           (user?.avatar
-                            ? `http://localhost:8000/api/v1/auth/avatar-display`
+                            ? `${getApiUrl()}/api/v1/auth/avatar-display`
                             : `https://ui-avatars.com/api/?name=${formData.name}&background=random`)
                         }
                         alt="Avatar"
                         className="w-32 h-32 rounded-full border-4 border-white shadow-lg mx-auto"
                       />
+                      {/* <img
+                        src={
+                          avatarPreview ||
+                          (user?.avatar
+                            ? `${getApiUrl()}/api/v1/auth/avatar-display`
+                            : `https://ui-avatars.com/api/?name=${formData.name}&background=random`)
+                        }
+                        alt="Avatar"
+                        className="w-32 h-32 rounded-full border-4 border-white shadow-lg mx-auto"
+                      /> */}
                       <label className="absolute bottom-0 right-0 bg-blue-600 text-white p-2 rounded-full cursor-pointer hover:bg-blue-700 transition">
                         <input
                           type="file"
@@ -329,9 +388,24 @@ const ProfileModal = ({ isOpen, onClose }) => {
                           onChange={handleAvatarChange}
                           className="hidden"
                         />
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
                         </svg>
                       </label>
                     </div>
@@ -350,8 +424,12 @@ const ProfileModal = ({ isOpen, onClose }) => {
 
                   {/* Account Info */}
                   <div className="space-y-2">
-                    <h3 className="font-medium text-gray-800">Account Information</h3>
-                    <p className="text-sm text-gray-600">Email: {formData.email}</p>
+                    <h3 className="font-medium text-gray-800">
+                      Account Information
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      Email: {formData.email}
+                    </p>
                     <p className="text-sm text-gray-600">
                       Member since:{' '}
                       {user?.createdAt
@@ -365,7 +443,9 @@ const ProfileModal = ({ isOpen, onClose }) => {
               {/* Right Column - Profile Form */}
               <div className="md:col-span-2">
                 <form onSubmit={handleProfileSubmit} className="space-y-4">
-                  <h3 className="text-lg font-medium text-gray-800">Personal Information</h3>
+                  <h3 className="text-lg font-medium text-gray-800">
+                    Personal Information
+                  </h3>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
@@ -482,7 +562,9 @@ const ProfileModal = ({ isOpen, onClose }) => {
           {activeTab === 'security' && (
             <div className="max-w-2xl mx-auto">
               <form onSubmit={handlePasswordSubmit} className="space-y-6">
-                <h3 className="text-lg font-medium text-gray-800">Change Password</h3>
+                <h3 className="text-lg font-medium text-gray-800">
+                  Change Password
+                </h3>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -548,7 +630,9 @@ const ProfileModal = ({ isOpen, onClose }) => {
 
               {/* Danger Zone */}
               <div className="border-t pt-8 mt-8">
-                <h3 className="text-lg font-medium text-red-800 mb-4">Danger Zone</h3>
+                <h3 className="text-lg font-medium text-red-800 mb-4">
+                  Danger Zone
+                </h3>
                 <button
                   onClick={logout}
                   className="bg-red-600 text-white px-6 py-2 rounded-md font-medium hover:bg-red-700 transition duration-200"
@@ -563,13 +647,17 @@ const ProfileModal = ({ isOpen, onClose }) => {
           {activeTab === 'resume' && (
             <div className="max-w-2xl mx-auto">
               <div className="space-y-6">
-                <h3 className="text-lg font-medium text-gray-800">Resume Management</h3>
+                <h3 className="text-lg font-medium text-gray-800">
+                  Resume Management
+                </h3>
 
                 {resumeFile ? (
                   <div className="bg-green-50 border border-green-200 rounded-lg p-6">
                     <div className="flex items-center justify-between mb-4">
                       <div>
-                        <h4 className="text-lg font-medium text-green-800">✓ Resume Uploaded</h4>
+                        <h4 className="text-lg font-medium text-green-800">
+                          ✓ Resume Uploaded
+                        </h4>
                         <p className="text-sm text-green-600 mt-1">
                           Filename: {getFileName(resumeFile)}
                         </p>
@@ -592,11 +680,26 @@ const ProfileModal = ({ isOpen, onClose }) => {
                   </div>
                 ) : (
                   <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
-                    <svg className="w-12 h-12 text-yellow-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    <svg
+                      className="w-12 h-12 text-yellow-500 mx-auto mb-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      />
                     </svg>
-                    <h4 className="text-lg font-medium text-yellow-800 mb-2">No Resume Uploaded</h4>
-                    <p className="text-yellow-600">Upload your resume to make it available for job applications.</p>
+                    <h4 className="text-lg font-medium text-yellow-800 mb-2">
+                      No Resume Uploaded
+                    </h4>
+                    <p className="text-yellow-600">
+                      Upload your resume to make it available for job
+                      applications.
+                    </p>
                   </div>
                 )}
 
@@ -608,8 +711,18 @@ const ProfileModal = ({ isOpen, onClose }) => {
                       onChange={handleResumeUpload}
                       className="hidden"
                     />
-                    <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
+                    <svg
+                      className="w-16 h-16 text-gray-400 mx-auto mb-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"
+                      />
                     </svg>
                     <p className="text-lg font-medium text-gray-700 mb-2">
                       {resumeFile ? 'Update Resume' : 'Upload Resume'}

@@ -1,6 +1,18 @@
 import axios from 'axios';
 
-const API_URL = '/api';
+// const API_URL = import.meta.env.VITE_API_URL || '/api';
+// const API_URL = '/api';
+
+const getBaseURL = () => {
+  const apiUrl = import.meta.env.VITE_API_URL;
+  if (apiUrl && apiUrl.trim()) {
+    return apiUrl;
+  }
+  return '/api';
+};
+
+const API_URL = getBaseURL();
+// console.log('API Base URL:', API_URL);
 
 const api = axios.create({
   baseURL: API_URL,
@@ -76,10 +88,23 @@ export const applicationApi = {
 
 export const fileAPI = {
   download: (type, filename) =>
-    api.get(`/v1/files/${type}/${filename}`, {
+    api.get(`/v1/applications/files/${type}/${filename}`, {
       responseType: 'blob',
     }),
-  delete: (type, filename) => api.delete(`/v1/files/${type}/${filename}`),
+  delete: (type, filename) =>
+    api.delete(`/v1/applications/files/${type}/${filename}`),
+};
+
+// Helper function to get full URL for static files
+export const getApiUrl = () => {
+  const apiUrl = import.meta.env.VITE_API_URL;
+
+  if (apiUrl && apiUrl.trim()) {
+    return apiUrl;
+  }
+
+  // For development, return empty string (files will be fetched via /api proxy)
+  return '';
 };
 
 export default api;

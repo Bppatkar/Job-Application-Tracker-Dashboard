@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext.jsx';
@@ -30,7 +28,19 @@ const Profile = () => {
     fetchProfile();
   }, []);
 
+  const getApiUrl = () => {
+    const apiUrl = import.meta.env.VITE_API_URL;
+
+    if (apiUrl && apiUrl.trim()) {
+      return apiUrl;
+    }
+
+   
+    return 'http://localhost:8000';
+  };
+
   const fetchProfile = async () => {
+    setLoading(true);
     try {
       const response = await authApi.getProfile();
       const userData = response.data.user;
@@ -48,6 +58,7 @@ const Profile = () => {
         createdAt: userData.createdAt || '',
       });
     } catch (error) {
+      setLoading(false);
       toast.error('Failed to fetch profile');
     }
   };
@@ -132,12 +143,22 @@ const Profile = () => {
                 <img
                   src={
                     profileData.avatar
-                      ? `http://localhost:8000/${profileData.avatar}`
+                      ? // ? `http://localhost:8000/${profileData.avatar}`
+                        `${getApiUrl()}/${profileData.avatar} `
                       : `https://ui-avatars.com/api/?name=${profileData.name}&background=random&size=128`
                   }
                   alt="Profile"
                   className="w-32 h-32 rounded-full border-4 border-white shadow-lg"
                 />
+                {/* <img
+                  src={
+                    profileData.avatar
+                      ? getAvatarUrl(profileData.avatar)
+                      : `https://ui-avatars.com/api/?name=${profileData.name}&background=random&size=128`
+                  }
+                  alt="Profile"
+                  className="w-32 h-32 rounded-full border-4 border-white shadow-lg"
+                /> */}
               </div>
 
               {/* Basic Info */}
