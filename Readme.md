@@ -1,118 +1,187 @@
 # Job Application Tracker 📋
 
-A full-stack MERN application to track job applications with authentication, analytics dashboard, and CRUD operations.
+A full-stack MERN application to track job applications with authentication, profile management, file uploads, and analytics dashboard.
 
 ![MERN Stack](https://img.shields.io/badge/MERN-Stack-blue)
-![React](https://img.shields.io/badge/React-18.2.0-blue)
+![React](https://img.shields.io/badge/React-19.2.0-blue)
+![Node.js](https://img.shields.io/badge/Node.js-v18+-green)
+![MongoDB](https://img.shields.io/badge/MongoDB-7.0-green)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38B2AC)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
 ## ✨ Features
 
-### 🔐 Authentication
-- User registration and login
-- JWT-based authentication
-- Protected routes
-- Password encryption
+### 🔐 Authentication & User Management
+- User registration and login with JWT
+- Secure password encryption with bcryptjs
+- Protected routes and private API endpoints
+- Profile management with avatar upload
+- Password change functionality
 
-### 📊 Dashboard
+### 👤 User Profile
+- Profile editing (name, location, phone, bio)
+- Avatar upload and management
+- Resume upload and download
+- Social profiles (LinkedIn, GitHub)
+- Account statistics and creation date
+
+### 📊 Dashboard Analytics
 - Real-time application statistics
-- Interactive charts using Recharts
+- Interactive bar charts using Recharts
 - Status distribution visualization
-- Quick overview cards
+- Quick overview cards (Total, Interviews, Offers, Rejected)
+- Responsive design for all devices
 
 ### 📝 Application Management
-- **Create**: Add new job applications
-- **Read**: View all applications with details
-- **Update**: Modify application status and details
-- **Delete**: Remove applications
-- **Search & Filter**: Filter by status, company, date
+- **Create**: Add new job applications with details
+- **Read**: View all applications with filtering
+- **Update**: Modify application status, notes, and details
+- **Delete**: Remove applications with confirmation
+- **Attachments**: Upload and download resume/cover letters for each application
+- **Search & Filter**: Filter by status and date
 
-### 🎨 UI/UX
+### 📁 File Management
+- Avatar upload and display
+- Resume upload (PDF, DOC, DOCX)
+- Cover letter upload for applications
+- Secure file storage and downloads
+- File size validation (max 5MB)
+
+### 🎨 UI/UX Features
 - Responsive design with Tailwind CSS
-- Clean and modern interface
-- Toast notifications
-- Loading states
-- Form validation
+- Modern and clean interface
+- Toast notifications for feedback
+- Loading states and spinners
+- Form validation on frontend and backend
+- Modal dialogs for editing
+- Tab-based navigation
 
 ## 🚀 Tech Stack
 
 ### **Frontend**
-- **React** - UI library
-- **React Router** - Routing
-- **Tailwind CSS** - Styling
-- **Recharts** - Data visualization
-- **Axios** - HTTP client
-- **React Hot Toast** - Notifications
+- **React 19** - UI library
+- **React Router v7** - Routing and navigation
+- **Tailwind CSS v4** - Utility-first styling
+- **Recharts** - Interactive data visualization
+- **Axios** - HTTP client with interceptors
+- **React Hot Toast** - Toast notifications
+- **date-fns** - Date formatting
+- **Vite** - Fast build tool and dev server
 
 ### **Backend**
-- **Node.js** - Runtime environment
+- **Node.js** - JavaScript runtime
 - **Express.js** - Web framework
-- **MongoDB** - Database
-- **Mongoose** - ODM
-- **JWT** - Authentication
+- **MongoDB** - NoSQL database
+- **Mongoose** - MongoDB ODM
+- **JWT** - JSON Web Tokens authentication
 - **bcryptjs** - Password hashing
-- **CORS** - Cross-origin requests
+- **Multer** - File upload middleware
+- **CORS** - Cross-origin resource sharing
 
 ## 📋 Prerequisites
 
-- Node.js (v14 or higher)
-- MongoDB Atlas account or local MongoDB
-- npm or yarn
+- Node.js (v18 or higher)
+- npm or yarn package manager
+- MongoDB Atlas account (free tier available)
+- Git
 
-## 🛠️ Installation
+## 🛠️ Installation & Setup
 
 ### 1. Clone the Repository
 ```bash
 git clone https://github.com/yourusername/job-tracker.git
-cd job-tracker
+cd jobApplicationTracker
 ```
 
 ### 2. Backend Setup
+
 ```bash
 # Navigate to backend directory
-cd backend
+cd server
 
 # Install dependencies
 npm install
 
-# Create .env file
-echo "MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret_key_here
-PORT=5000" > .env
+# Create .env file in server directory
+```
 
+**Backend .env file:**
+```env
+MONGOURI=mongodb+srv://username:password@cluster.mongodb.net/jobtracker
+PORT=8000
+NODE_ENV=development
+JWT_SECRET=your_super_secret_jwt_key_here
+FRONTEND_URL=http://localhost:5173
+```
+
+```bash
 # Start backend server
 npm run dev
 ```
 
+**Backend will run on:** `http://localhost:8000`
+
 ### 3. Frontend Setup
+
 ```bash
 # Navigate to frontend directory
-cd ../frontend
+cd client
 
 # Install dependencies
 npm install
 
-# Start React development server
-npm start
+# Create .env file in client directory
 ```
 
-## ⚙️ Environment Variables
+**Frontend .env file (Local Development):**
+```env
+# Leave empty for local development - uses Vite proxy
+# Only set VITE_API_URL for production (Render)
+```
+
+```bash
+# Start React development server
+npm run dev
+```
+
+**Frontend will run on:** `http://localhost:5173`
+
+## 🔄 Environment Variables
 
 ### Backend (.env)
 ```env
-MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/jobtracker
-JWT_SECRET=your_super_secret_jwt_key_here
-PORT=5000
+# Database
+MONGOURI=mongodb+srv://username:password@cluster.mongodb.net/database_name
+
+# Server
+PORT=8000
+NODE_ENV=development
+
+# Authentication
+JWT_SECRET=your_jwt_secret_key_minimum_32_characters
+
+# Frontend URL (for CORS)
+FRONTEND_URL=http://localhost:5173
+```
+
+### Frontend (.env.local - Local Development)
+```env
+# Leave empty for local development
+# Frontend uses Vite proxy to backend
+```
+
+### Frontend (.env - Production/Render)
+```env
+VITE_API_URL=https://your-backend.onrender.com
 ```
 
 ## 📁 Project Structure
 
 ```
-job-tracker/
+jobApplicationTracker/
 │
-├── backend/
-│   ├── controllers/
+├── server/
+│   ├── controller/
 │   │   ├── authController.js
 │   │   └── applicationController.js
 │   ├── middleware/
@@ -123,27 +192,38 @@ job-tracker/
 │   ├── routes/
 │   │   ├── authRoutes.js
 │   │   └── applicationRoutes.js
+│   ├── utils/
+│   │   └── multer.js
+│   ├── db/
+│   │   └── db.js
+│   ├── uploads/
+│   │   ├── avatars/
+│   │   ├── resumes/
+│   │   └── cover-letters/
 │   ├── .env
 │   ├── package.json
 │   └── server.js
 │
-└── frontend/
-    ├── public/
+└── client/
     ├── src/
     │   ├── components/
-    │   │   ├── Login.js
-    │   │   ├── Register.js
-    │   │   ├── Dashboard.js
-    │   │   ├── ApplicationList.js
-    │   │   ├── AddApplication.js
-    │   │   ├── StatsCard.js
-    │   │   └── PrivateRoute.js
+    │   │   ├── Login.jsx
+    │   │   ├── Register.jsx
+    │   │   ├── Dashboard.jsx
+    │   │   ├── Profile.jsx
+    │   │   ├── ProfileModal.jsx
+    │   │   ├── ApplicationList.jsx
+    │   │   ├── AddApplication.jsx
+    │   │   ├── StatsCard.jsx
+    │   │   └── PrivateRoute.jsx
     │   ├── context/
-    │   │   └── AuthContext.js
+    │   │   └── AuthContext.jsx
     │   ├── utils/
     │   │   └── api.js
-    │   ├── App.js
-    │   └── index.js
+    │   ├── App.jsx
+    │   └── main.jsx
+    ├── .env
+    ├── vite.config.js
     ├── tailwind.config.js
     └── package.json
 ```
@@ -151,171 +231,257 @@ job-tracker/
 ## 🔧 API Endpoints
 
 ### Authentication
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/auth/register` | Register new user |
-| POST | `/api/auth/login` | User login |
-| GET | `/api/auth/me` | Get current user |
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|--------|
+| POST | `/api/v1/auth/register` | Register new user | ❌ |
+| POST | `/api/v1/auth/login` | User login | ❌ |
+| GET | `/api/v1/auth/profile` | Get current user profile | ✅ |
+| PUT | `/api/v1/auth/profile` | Update user profile | ✅ |
+| PUT | `/api/v1/auth/change-password` | Change password | ✅ |
+| POST | `/api/v1/auth/avatar` | Upload avatar | ✅ |
+| DELETE | `/api/v1/auth/avatar` | Delete avatar | ✅ |
+| GET | `/api/v1/auth/avatar-display` | Display user avatar | ✅ |
+| POST | `/api/v1/auth/resume` | Upload resume | ✅ |
+| DELETE | `/api/v1/auth/resume` | Delete resume | ✅ |
+| GET | `/api/v1/auth/resume/:filename` | Download resume | ✅ |
 
 ### Applications
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/applications` | Get all applications |
-| GET | `/api/applications/stats` | Get application statistics |
-| GET | `/api/applications/:id` | Get single application |
-| POST | `/api/applications` | Create new application |
-| PUT | `/api/applications/:id` | Update application |
-| DELETE | `/api/applications/:id` | Delete application |
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|--------|
+| GET | `/api/v1/applications` | Get all applications | ✅ |
+| POST | `/api/v1/applications` | Create new application | ✅ |
+| GET | `/api/v1/applications/:id` | Get single application | ✅ |
+| PUT | `/api/v1/applications/:id` | Update application | ✅ |
+| DELETE | `/api/v1/applications/:id` | Delete application | ✅ |
+| GET | `/api/v1/applications/stats` | Get application statistics | ✅ |
+| POST | `/api/v1/applications/:id/resume` | Upload resume for application | ✅ |
+| POST | `/api/v1/applications/:id/cover-letter` | Upload cover letter | ✅ |
+| GET | `/api/v1/applications/files/:type/:filename` | Download file | ✅ |
+| DELETE | `/api/v1/applications/:id/resume` | Delete application resume | ✅ |
+| DELETE | `/api/v1/applications/:id/cover-letter` | Delete cover letter | ✅ |
 
 ## 🎯 Usage Guide
 
-### 1. Registration
+### 1. User Registration
 - Navigate to `/register`
-- Enter name, email, and password
+- Enter name, email, and password (min 6 characters)
 - Click "Register" to create account
+- Automatically logs in after registration
 
-### 2. Login
+### 2. User Login
 - Go to `/login`
-- Enter registered credentials
-- Access dashboard upon successful login
+- Enter registered email and password
+- Access protected dashboard upon successful login
 
-### 3. Add Application
+### 3. Profile Management
+- Click "Profile" in dashboard navigation
+- View profile details and statistics
+- Click "Edit Profile Details" to:
+  - Update personal information
+  - Change avatar
+  - Update social profiles
+  - Change password
+- Click "Resume Management" tab to:
+  - Upload/update resume (PDF, DOC, DOCX)
+  - Download resume
+  - Delete resume
+
+### 4. Add Job Application
 1. Click "Add New Application" in dashboard
-2. Fill in:
-   - Company name
-   - Position
+2. Fill in application details:
+   - **Company name** (required)
+   - **Position** (required)
    - Job link (optional)
    - Status (Applied/Interview/Rejected/Offer/Accepted)
+   - Expected salary (optional)
    - Notes (optional)
-   - Salary (optional)
-3. Click "Add Application"
+3. Optionally upload:
+   - Resume (specific to this application)
+   - Cover letter
+4. Click "Add Application"
 
-### 4. Manage Applications
+### 5. Manage Applications
 - **View**: All applications listed in table
-- **Edit**: Click edit icon on any application
-- **Delete**: Click delete icon with confirmation
-- **Filter**: Use status dropdown to filter applications
+- **View Details**: Click "View" to see full details
+- **Edit**: Click "Edit" in detail modal to modify
+- **Delete**: Click "Delete" with confirmation
+- **Download Files**: Download attached resume/cover letter
+- **Filter**: View filtered by status
 
-### 5. View Analytics
-- Dashboard shows real-time statistics
-- Bar chart displays status distribution
-- Quick stats cards show totals
-
-## 📱 Screenshots
-
-### Login Page
-![Login Page](https://via.placeholder.com/800x450/3b82f6/ffffff?text=Login+Page)
-
-### Dashboard
-![Dashboard](https://via.placeholder.com/800x450/10b981/ffffff?text=Dashboard+Analytics)
-
-### Applications List
-![Applications](https://via.placeholder.com/800x450/8b5cf6/ffffff?text=Applications+List)
+### 6. View Analytics
+- Dashboard shows real-time statistics:
+  - Total applications
+  - Active interviews
+  - Offers received
+  - Rejected applications
+- Interactive bar chart shows status distribution
 
 ## 🚀 Deployment
 
-### Backend Deployment (Heroku)
-```bash
-# Login to Heroku
-heroku login
+### Backend Deployment (Render)
 
-# Create Heroku app
-heroku create job-tracker-backend
+1. **Push code to GitHub**
+   ```bash
+   git push origin main
+   ```
 
-# Add environment variables
-heroku config:set MONGO_URI=your_mongodb_uri
-heroku config:set JWT_SECRET=your_secret
+2. **Create Render account** at https://render.com
 
-# Deploy
-git push heroku main
-```
+3. **Deploy Backend:**
+   - New → Web Service
+   - Connect your GitHub repo
+   - Build Command: `npm install`
+   - Start Command: `npm run dev` or `node server.js`
+   - Add environment variables:
+     - `MONGOURI`: Your MongoDB connection string
+     - `JWT_SECRET`: Your secret key
+     - `FRONTEND_URL`: Your deployed frontend URL
+     - `PORT`: 8000
+     - `NODE_ENV`: production
+   - Deploy
 
-### Frontend Deployment (Vercel)
-```bash
-# Install Vercel CLI
-npm i -g vercel
+4. **Get your backend URL:** `https://your-app-name.onrender.com`
 
-# Deploy
-vercel
-```
+### Frontend Deployment (Render/Vercel)
+
+#### Option 1: Render
+1. New → Static Site
+2. Connect your GitHub repo (client folder)
+3. Build Command: `npm run build`
+4. Publish Directory: `dist`
+5. Add environment variable:
+   - `VITE_API_URL`: `https://your-backend.onrender.com`
+6. Deploy
+
+#### Option 2: Vercel
+1. Install Vercel CLI: `npm i -g vercel`
+2. Deploy: `vercel`
+3. Set environment variable in Vercel dashboard:
+   - `VITE_API_URL`: Your backend URL
+4. Done!
+
+## 🔐 Security Features
+
+- **Password Security**: Bcrypt hashing with salt rounds
+- **Authentication**: JWT tokens with 30-day expiration
+- **Authorization**: Protected routes and API endpoints
+- **CORS**: Configured for specific origins
+- **File Validation**: Type and size validation
+- **Error Handling**: Comprehensive error messages
 
 ## 🧪 Testing
 
-### Backend Tests
+### Manual API Testing with Postman
+1. Import the API endpoints from the documentation
+2. Set up environment variables for token
+3. Test each endpoint with sample data
+
+### Local Development Testing
 ```bash
-cd backend
-npm test
+# Test registration
+POST http://localhost:8000/api/v1/auth/register
+Body: {
+  "name": "Test User",
+  "email": "test@example.com",
+  "password": "test123"
+}
+
+# Test login
+POST http://localhost:8000/api/v1/auth/login
+Body: {
+  "email": "test@example.com",
+  "password": "test123"
+}
 ```
 
-### API Testing with Postman
-Import the Postman collection from `docs/postman_collection.json`
+## 🔄 Development Workflow
 
-## 🔄 Environment Setup for Development
+### Terminal 1 - Backend
+```bash
+cd server
+npm run dev
+# Runs on http://localhost:8000
+```
 
-1. **MongoDB Setup:**
-   - Create free cluster at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
-   - Get connection string
-   - Update `.env` file
+### Terminal 2 - Frontend
+```bash
+cd client
+npm run dev
+# Runs on http://localhost:5173
+```
 
-2. **Development Mode:**
-   ```bash
-   # Terminal 1 - Backend
-   cd backend
-   npm run dev
-   
-   # Terminal 2 - Frontend
-   cd frontend
-   npm start
-   ```
+### Terminal 3 - MongoDB (if local)
+```bash
+# Start MongoDB locally (if not using Atlas)
+mongod
+```
 
-3. **Access the application:**
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:5000
+## 📱 Responsive Design
+
+- ✅ Mobile (< 640px)
+- ✅ Tablet (640px - 1024px)
+- ✅ Desktop (> 1024px)
+
+## 🐛 Troubleshooting
+
+### Avatar/Resume not displaying?
+- Check `VITE_API_URL` environment variable
+- Ensure `FRONTEND_URL` in backend .env matches frontend URL
+- Clear browser cache and refresh
+
+### 404 errors on API calls?
+- Verify backend is running on correct port
+- Check environment variables
+- Restart both frontend and backend
+
+### Database connection errors?
+- Verify MongoDB connection string
+- Check if IP is whitelisted in MongoDB Atlas
+- Ensure database name is correct
+
+### CORS errors?
+- Update `FRONTEND_URL` in backend `.env`
+- Ensure no trailing slashes in URLs
+- Restart backend server
 
 ## 📈 Future Enhancements
 
 - [ ] Email notifications for status updates
-- [ ] File upload for resumes and cover letters
+- [ ] Calendar view for interview dates
+- [ ] Advanced filtering and search
 - [ ] Export applications to PDF/CSV
-- [ ] Calendar view for interviews
 - [ ] Dark mode toggle
+- [ ] Real-time notifications
 - [ ] Mobile app (React Native)
-- [ ] Integration with LinkedIn API
-- [ ] Job search from external APIs
-- [ ] AI-powered application suggestions
+- [ ] LinkedIn API integration
+- [ ] Job recommendations
+- [ ] Salary insights and trends
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
+2. Create a feature branch: `git checkout -b feature/YourFeature`
+3. Commit changes: `git commit -m 'Add YourFeature'`
+4. Push to branch: `git push origin feature/YourFeature`
 5. Open a Pull Request
 
+## 📝 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## 👨‍💻 Author
 
-**Your Name**
-- Portfolio: [Bhanu Portfolio](https://portfolio-bhanu-2026.vercel.app/)
-- LinkedIn: [Bhanu](https://www.linkedin.com/in/bhanu-pratap-patkar/)
-- GitHub: [@Bppatkar](https://github.com/Bppatkar)
-
-## 🙏 Acknowledgments
-
-- [MERN Stack Documentation](https://www.mongodb.com/mern-stack)
-- [Tailwind CSS](https://tailwindcss.com)
-- [Recharts](https://recharts.org)
-- [React Hot Toast](https://react-hot-toast.com)
+**Bhanu Pratap Patkar**
+- 🌐 Portfolio: [bhanu-2026.vercel.app](https://portfolio-bhanu-2026.vercel.app/)
+- 💼 LinkedIn: [Bhanu Pratap Patkar](https://www.linkedin.com/in/bhanu-pratap-patkar/)
+- 🐙 GitHub: [@Bppatkar](https://github.com/Bppatkar)
 
 ## ⭐ Support
 
-If you like this project, please give it a star on GitHub!
+If you find this project helpful, please give it a star on GitHub! It helps other developers discover this resource.
 
 ---
 
 **Built with ❤️ using MERN Stack By Bhanu Pratap Patkar**
-
----
-
 
 **Happy Job Hunting! 🚀**
