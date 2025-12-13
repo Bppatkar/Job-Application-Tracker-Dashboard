@@ -7,15 +7,6 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   build: {
     outDir: 'dist',
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom'],
-          charts: ['recharts'],
-          ui: ['@mui/material', '@emotion/react', '@emotion/styled'],
-        },
-      },
-    },
     chunkSizeWarningLimit: 1000,
   },
   server: {
